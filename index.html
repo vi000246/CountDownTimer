@@ -138,8 +138,7 @@
         const timeLeft = {
           Days: Math.floor(difference / (1000 * 60 * 60 * 24)),
           Hours: Math.floor((difference / (1000 * 60 * 60)) % 24),
-          Minutes: Math.floor((difference / 1000 / 60) % 60),
-          Seconds: Math.floor((difference / 1000) % 60)
+          Minutes: Math.floor((difference / 1000 / 60) % 60)
         };
 
         countdownElement.innerHTML = "";
