@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>強者試煉倒數計時</title>
+  <style>
+    body {
+      font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+      color: #333;
+    }
+
+    #countdown {
+      max-width: 600px;
+      margin: 0 auto 40px;
+      text-align: center;
+      padding: 20px;
+    }
+
+    .countdown-title {
+      font-size: 2rem;
+      margin-bottom: 0.5rem;
+      color: #022622;
+      font-weight: 700;
+    }
+
+    .countdown-description {
+      font-size: 1rem;
+      margin-bottom: 2rem;
+      color: #4b5563;
+    }
+
+    .countdown-blocks {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 16px;
+      justify-content: center;
+    }
+
+    .time-block {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      background-color: #f3f4f6;
+      padding: 16px;
+      border-radius: 0.5rem;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .time-block:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
+    }
+
+    .time-value {
+      font-size: 2.25rem;
+      font-weight: bold;
+      color: #022622;
+      margin-bottom: 0.25rem;
+    }
+
+    .time-label {
+      font-size: 0.875rem;
+      font-weight: 500;
+      color: #6b7280;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      margin: 0;
+    }
+
+    @media (min-width: 768px) {
+      .countdown-blocks {
+        grid-template-columns: repeat(4, 1fr);
+        gap: 22px;
+      }
+    }
+
+    @media (min-width: 1024px) {
+      .countdown-blocks {
+        gap: 24px;
+      }
+
+      .time-block {
+        min-width: 120px;
+        padding: 20px 24px;
+      }
+
+      .time-value {
+        font-size: 2.5rem;
+      }
+    }
+
+    @keyframes pulse {
+      0% { transform: scale(1); }
+      50% { transform: scale(1.05); }
+      100% { transform: scale(1); }
+    }
+  </style>
+</head>
+<body>
+
+  <div id="countdown">
+    <h2 class="countdown-title">強者試煉</h2>
+    <div class="countdown-blocks"></div>
+  </div>
+
+  <script>
+    const launchDate = new Date(2025, 9, 1, 0, 0, 0); // 注意：月份是 0-based（9 = 10月）
+    const countdownElement = document.querySelector(".countdown-blocks");
+
+    const createBlock = (label, value) => {
+      const block = document.createElement("div");
+      block.className = "time-block";
+
+      const valueEl = document.createElement("span");
+      valueEl.className = "time-value";
+      valueEl.textContent = value < 10 ? `0${value}` : value;
+
+      const labelEl = document.createElement("p");
+      labelEl.className = "time-label";
+      labelEl.textContent = label;
+
+      if (label === "Seconds") {
+        valueEl.style.animation = "pulse 1s infinite";
+      }
+
+      block.appendChild(valueEl);
+      block.appendChild(labelEl);
+      return block;
+    };
+
+    const updateCountdown = () => {
+      const now = new Date();
+      const difference = launchDate - now;
+
+      if (difference > 0) {
+        const timeLeft = {
+          Days: Math.floor(difference / (1000 * 60 * 60 * 24)),
+          Hours: Math.floor((difference / (1000 * 60 * 60)) % 24),
+          Minutes: Math.floor((difference / 1000 / 60) % 60),
+          Seconds: Math.floor((difference / 1000) % 60)
+        };
+
+        countdownElement.innerHTML = "";
+        for (const [label, value] of Object.entries(timeLeft)) {
+          countdownElement.appendChild(createBlock(label, value));
+        }
+      } else {
+        countdownElement.innerHTML = "";
+        document.querySelector(".countdown-title").textContent = "Launch Day!";
+
+        const messageBlock = document.createElement("div");
+        messageBlock.className = "time-block expired-message";
+        messageBlock.style.gridColumn = "1 / -1";
+        messageBlock.style.padding = "2rem";
+        messageBlock.textContent = "We're live now!";
+
+        countdownElement.appendChild(messageBlock);
+        clearInterval(timer);
+      }
+    };
+
+    updateCountdown();
+    const timer = setInterval(updateCountdown, 1000);
+  </script>
+
+</body>
+</html>
