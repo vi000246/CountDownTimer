@@ -13,24 +13,26 @@
       color: #fff;
     }
 
-    .dashboard {
-      display: flex;
-      flex-wrap: wrap;
-      justify-content: center;
-      gap: 0.5rem;
-      align-items: center;
-    }
+.dashboard {
+  display: flex;
+  flex-wrap: nowrap; /* 不換行 */
+  overflow-x: auto;  /* 小螢幕滾動用 */
+  gap: 0.25rem;
+  align-items: stretch;
+  justify-content: flex-start;
+  padding-bottom: 4px;
+}
 
-    .block {
-      background-color: #f3f4f6;
-      color: #022622;
-      border-radius: 0.5rem;
-      padding: 1rem;
-      text-align: center;
-      min-width: 70px;
-      flex: 1 0 70px;
-      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
-    }
+.block {
+  background-color: #f3f4f6;
+  color: #022622;
+  border-radius: 0.5rem;
+  padding: 0.5rem;
+  text-align: center;
+  min-width: 60px;
+  flex: 0 0 auto;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+}
 
     .block .count {
       font-size: 1.5rem;
