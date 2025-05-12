@@ -99,7 +99,6 @@
 <body>
 
   <div id="countdown">
-    <h2 class="countdown-title">強者試煉</h2>
     <div class="countdown-blocks"></div>
   </div>
 
@@ -135,8 +134,8 @@
       if (difference > 0) {
         const timeLeft = {
           Days: Math.floor(difference / (1000 * 60 * 60 * 24)),
-          Hours: Math.floor((difference / (1000 * 60 * 60)) % 24),
-          Minutes: Math.floor((difference / 1000 / 60) % 60)
+          //Hours: Math.floor((difference / (1000 * 60 * 60)) % 24),
+          //Minutes: Math.floor((difference / 1000 / 60) % 60)
         };
 
         countdownElement.innerHTML = "";
