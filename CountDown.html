@@ -3,168 +3,120 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>強者試煉倒數計時</title>
+  <title>倒數 + LeetCode 統計</title>
   <style>
     body {
-      font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
-      color: #333;
-    }
-    #countdown {
-      max-width: 600px;
-      text-align: center;
-    }
-
-    .countdown-title {
-      font-size: 2rem;
-      margin-bottom: 0.5rem;
-      color: #003366;
-      font-weight: 700;
-    }
-
-    .countdown-description {
-      font-size: 1rem;
-      margin-bottom: 2rem;
-      color: #4b5563;
-    }
-
-    .countdown-blocks {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 8px;
-      justify-content: center;
-    }
-  .countdown-subtitle {
-    font-size: 0.875rem;
-    color: white;
-    text-align: left;
-    margin-bottom: 0.5rem;
-  }
-    .time-block {
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      align-items: center;
-      background-color: #f3f4f6;
-      padding: 8px;
-      border-radius: 0.5rem;
-      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
-      transition: transform 0.3s ease, box-shadow 0.3s ease;
-    }
-
-    .time-block:hover {
-      transform: translateY(-3px);
-      box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
-    }
-
-    .time-value {
-      font-size: 1rem;
-      font-weight: bold;
-      color: #022622;
-      margin-bottom: 0.25rem;
-    }
-
-    .time-label {
-      font-size: 0.875rem;
-      font-weight: 500;
-      color: #6b7280;
-      text-transform: uppercase;
-      letter-spacing: 0.05em;
+      font-family: "Segoe UI", Tahoma, sans-serif;
       margin: 0;
+      padding: 1rem;
+      background: #1e293b;
+      color: #fff;
     }
 
-    @media (min-width: 768px) {
-      .countdown-blocks {
-        grid-template-columns: repeat(4, 1fr);
-        gap: 22px;
-      }
+    .dashboard {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 0.5rem;
+      align-items: center;
     }
 
-    @media (min-width: 1024px) {
-      .countdown-blocks {
-        gap: 24px;
-      }
-
-      .time-block {
-        min-width: 120px;
-        padding: 20px 24px;
-      }
-
-      .time-value {
-        font-size: 2.5rem;
-      }
+    .block {
+      background-color: #f3f4f6;
+      color: #022622;
+      border-radius: 0.5rem;
+      padding: 1rem;
+      text-align: center;
+      min-width: 70px;
+      flex: 1 0 70px;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
     }
 
-    @keyframes pulse {
-      0% { transform: scale(1); }
-      50% { transform: scale(1.05); }
-      100% { transform: scale(1); }
+    .block .count {
+      font-size: 1.5rem;
+      font-weight: bold;
+    }
+
+    .label {
+      font-size: 0.75rem;
+      opacity: 0.8;
+    }
+
+    .easy {
+      background-color: #2ecc71;
+      color: white;
+    }
+    .medium {
+      background-color: #f39c12;
+      color: white;
+    }
+    .hard {
+      background-color: #e74c3c;
+      color: white;
+    }
+
+    @media (max-width: 400px) {
+      .dashboard {
+        flex-direction: column;
+        align-items: stretch;
+      }
     }
   </style>
 </head>
 <body>
-<div class="countdown-subtitle">⏱️ 強者試煉</div>
-  <div id="countdown">
-    <div class="countdown-blocks"></div>
+  <div class="dashboard">
+    <div class="block" id="daysBlock">
+      <div class="count" id="days">--</div>
+      <div class="label">DAYS</div>
+    </div>
+
+    <div class="block easy">
+      <div class="count" id="easy">-</div>
+      <div class="label">Easy</div>
+    </div>
+
+    <div class="block medium">
+      <div class="count" id="medium">-</div>
+      <div class="label">Medium</div>
+    </div>
+
+    <div class="block hard">
+      <div class="count" id="hard">-</div>
+      <div class="label">Hard</div>
+    </div>
   </div>
 
   <script>
-    const launchDate = new Date(2025, 9, 1, 0, 0, 0); // 注意：月份是 0-based（9 = 10月）
-    const countdownElement = document.querySelector(".countdown-blocks");
-
-    const createBlock = (label, value) => {
-      const block = document.createElement("div");
-      block.className = "time-block";
-
-      const valueEl = document.createElement("span");
-      valueEl.className = "time-value";
-      valueEl.textContent = value < 10 ? `0${value}` : value;
-
-      const labelEl = document.createElement("p");
-      labelEl.className = "time-label";
-      labelEl.textContent = label;
-
-      if (label === "Seconds") {
-        valueEl.style.animation = "pulse 1s infinite";
-      }
-
-      block.appendChild(valueEl);
-      block.appendChild(labelEl);
-      return block;
-    };
+    // 倒數計時：2025/10/1
+    const launchDate = new Date(2025, 9, 1); // 注意：month 是 0-based
 
     const updateCountdown = () => {
       const now = new Date();
-      const difference = launchDate - now;
-
-      if (difference > 0) {
-        const timeLeft = {
-          Days: Math.floor(difference / (1000 * 60 * 60 * 24)),
-          //Hours: Math.floor((difference / (1000 * 60 * 60)) % 24),
-          //Minutes: Math.floor((difference / 1000 / 60) % 60)
-        };
-
-        countdownElement.innerHTML = "";
-        for (const [label, value] of Object.entries(timeLeft)) {
-          countdownElement.appendChild(createBlock(label, value));
-        }
-      } else {
-        countdownElement.innerHTML = "";
-        document.querySelector(".countdown-title").textContent = "Launch Day!";
-
-        const messageBlock = document.createElement("div");
-        messageBlock.className = "time-block expired-message";
-        messageBlock.style.gridColumn = "1 / -1";
-        messageBlock.style.padding = "2rem";
-        messageBlock.textContent = "We're live now!";
-
-        countdownElement.appendChild(messageBlock);
-        clearInterval(timer);
-      }
+      const diff = launchDate - now;
+      const days = Math.max(0, Math.floor(diff / (1000 * 60 * 60 * 24)));
+      document.getElementById("days").textContent = days;
     };
 
     updateCountdown();
-    const timer = setInterval(updateCountdown, 1000);
-  </script>
+    setInterval(updateCountdown, 1000 * 60 * 60); // 每小時更新一次
 
+    // LeetCode 統計
+    const username = "vi000246";
+    const apiUrl = `https://leetcode-stats-api.herokuapp.com/${username}`;
+
+    async function fetchStats() {
+      try {
+        const res = await fetch(apiUrl);
+        const data = await res.json();
+        document.getElementById("easy").textContent = data.easySolved;
+        document.getElementById("medium").textContent = data.mediumSolved;
+        document.getElementById("hard").textContent = data.hardSolved;
+      } catch (err) {
+        console.error("讀取失敗：", err);
+      }
+    }
+
+    fetchStats();
+  </script>
 </body>
 </html>
