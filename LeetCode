@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>LeetCode 題目統計</title>
+  <style>
+    body {
+      font-family: sans-serif;
+      padding: 2rem;
+      background-color: #f9fafb;
+      color: #1f2937;
+    }
+    h5 {
+      margin-bottom: 1rem;
+	  color:white;
+    }
+    .stats {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1rem;
+    }
+    .card {
+      padding: 1rem;
+      border-radius: 0.5rem;
+      color: white;
+      text-align: center;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    }
+    .easy {
+      background-color: #2ecc71;
+    }
+    .medium {
+      background-color: #f39c12;
+    }
+    .hard {
+      background-color: #e74c3c;
+    }
+    .count {
+      font-size: 2rem;
+      font-weight: bold;
+    }
+    .label {
+      font-size: 0.9rem;
+      opacity: 0.85;
+    }
+  </style>
+</head>
+<body>
+
+  <h5>LeetCode 完成題數統計</h1>
+
+  <div class="stats" id="stats">
+    <div class="card easy">
+      <div class="count" id="easy">-</div>
+      <div class="label">Easy</div>
+    </div>
+    <div class="card medium">
+      <div class="count" id="medium">-</div>
+      <div class="label">Medium</div>
+    </div>
+    <div class="card hard">
+      <div class="count" id="hard">-</div>
+      <div class="label">Hard</div>
+    </div>
+  </div>
+
+  <script>
+    const username = "vi000246";
+    const apiUrl = `https://leetcode-stats-api.herokuapp.com/${username}`;
+
+    async function fetchStats() {
+      try {
+        const res = await fetch(apiUrl);
+        const data = await res.json();
+
+        document.getElementById("easy").textContent = data.easySolved;
+        document.getElementById("medium").textContent = data.mediumSolved;
+        document.getElementById("hard").textContent = data.hardSolved;
+      } catch (err) {
+        console.error("資料讀取錯誤：", err);
+        document.getElementById("stats").innerHTML = "<p>無法取得資料，請稍後再試。</p>";
+      }
+    }
+
+    fetchStats();
+  </script>
+
+</body>
+</html>
