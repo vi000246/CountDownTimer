@@ -10,22 +10,36 @@
       background-color: #f9fafb;
       color: #1f2937;
     }
-    h5 {
-      margin-bottom: 1rem;
-	  color:white;
-    }
-    .stats {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 1rem;
-    }
-    .card {
-      padding: 1rem;
-      border-radius: 0.5rem;
-      color: white;
-      text-align: center;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-    }
+.stats {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(80px, 1fr));
+  gap: 0.5rem;
+}
+
+.card {
+  padding: 0.5rem;
+  border-radius: 0.5rem;
+  color: white;
+  text-align: center;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+.count {
+  font-size: 1.5rem;
+  font-weight: bold;
+}
+
+.label {
+  font-size: 0.75rem;
+  opacity: 0.85;
+}
+
+/* 可選：標題字體縮小一點 */
+h1 {
+  font-size: 1rem;
+  margin-bottom: 0.5rem;
+}
+
     .easy {
       background-color: #2ecc71;
     }
@@ -34,14 +48,6 @@
     }
     .hard {
       background-color: #e74c3c;
-    }
-    .count {
-      font-size: 2rem;
-      font-weight: bold;
-    }
-    .label {
-      font-size: 0.9rem;
-      opacity: 0.85;
     }
   </style>
 </head>
