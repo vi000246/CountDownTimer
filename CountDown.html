@@ -61,24 +61,16 @@
       color: white;
     }
 
-    .chart-container {
-      margin: 1rem auto 0;
-      background: #334155;
+    .chart-container, .checkin-container, .heatmap-container {
+      margin-top: 1rem;
       padding: 1rem;
       border-radius: 1rem;
+      background: #334155;
+      width: 100%;
+      max-width: calc(60px * 4 + 0.25rem * 3 + 0.2rem);
+      margin-left: auto;
+      margin-right: auto;
     }
-
-.chart-container, .checkin-container {
-  margin-top: 1rem;
-  padding: 1rem;
-  border-radius: 1rem;
-  background: #334155;
-  width: 100%;
-  max-width: calc(60px * 4 + 0.25rem * 3 + 0.2rem);
-  margin-left: auto;
-  margin-right: auto;
-  display:inline-block
-}
 
     .checkin-grid {
       display: grid;
@@ -91,7 +83,6 @@
     .checkin-day {
       background-color: #1f2937;
       border-radius: 0.5rem;
-      padding: 0.5rem;
     }
 
     .checkin-day.green {
@@ -106,6 +97,47 @@
       font-size: 0.75rem;
       color: #cbd5e1;
       margin-top: 0.25rem;
+    }
+
+    .heatmap-grid {
+      display: grid;
+      grid-template-columns: repeat(7, 1fr);
+      gap: 4px;
+      justify-items: center;
+    }
+
+    .heatmap-day {
+      width: 20px;
+      height: 20px;
+      border-radius: 3px;
+      background-color: #4b5563;
+      position: relative;
+    }
+
+    .heatmap-day.active {
+      background-color: #22c55e;
+    }
+
+    .heatmap-day::after {
+      content: attr(data-tooltip);
+      position: absolute;
+      bottom: 125%;
+      left: 50%;
+      transform: translateX(-50%);
+      background-color: rgba(0, 0, 0, 0.75);
+      color: #fff;
+      padding: 4px 6px;
+      font-size: 0.75rem;
+      white-space: nowrap;
+      border-radius: 4px;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.2s ease-in-out;
+      z-index: 10;
+    }
+
+    .heatmap-day:hover::after {
+      opacity: 1;
     }
   </style>
 </head>
@@ -138,6 +170,10 @@
 
   <div class="checkin-container">
     <div class="checkin-grid" id="checkinGrid"></div>
+  </div>
+
+  <div class="heatmap-container">
+    <div class="heatmap-grid" id="heatmapGrid"></div>
   </div>
 
   <script>
@@ -214,6 +250,7 @@
           }
         });
 
+        // 打卡牆
         const checkinGrid = document.getElementById("checkinGrid");
         checkinGrid.innerHTML = "";
         Object.entries(daily).forEach(([date, count]) => {
@@ -225,6 +262,24 @@
           `;
           checkinGrid.appendChild(box);
         });
+
+        // 熱力圖（30天）
+        const heatmapGrid = document.getElementById("heatmapGrid");
+        heatmapGrid.innerHTML = "";
+
+        for (let i = 29; i >= 0; i--) {
+          const d = new Date();
+          d.setDate(now.getDate() - i);
+          d.setUTCHours(0, 0, 0, 0);
+          const dateStr = d.toISOString().split("T")[0];
+          const timestamp = Math.floor(d.getTime() / 1000);
+          const count = data.submissionCalendar?.[timestamp] || 0;
+
+          const cell = document.createElement("div");
+          cell.className = "heatmap-day " + (count > 0 ? "active" : "inactive");
+          cell.setAttribute("data-tooltip", `${dateStr}: ${count} 次`);
+          heatmapGrid.appendChild(cell);
+        }
 
       } catch (err) {
         console.error("讀取失敗：", err);
