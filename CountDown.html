@@ -62,7 +62,7 @@
     }
 
     .chart-container, .checkin-container, .heatmap-container {
-      margin-top: 0.4rem;
+      margin-top: 1rem;
       padding: 1rem;
       border-radius: 1rem;
       background: #334155;
@@ -106,6 +106,10 @@
       justify-items: center;
     }
 
+	.checkin-day.gray {
+	  background: #6b7280;   /* Tailwind 的 gray-500 */
+	  color: #ffffff;
+	}
     .heatmap-day {
       width: 20px;
       height: 20px;
@@ -250,18 +254,36 @@
           }
         });
 
-        // 打卡牆
-        const checkinGrid = document.getElementById("checkinGrid");
-        checkinGrid.innerHTML = "";
-        Object.entries(daily).forEach(([date, count]) => {
-          const box = document.createElement("div");
-          box.className = "checkin-day " + (count > 0 ? "green" : "red");
-          box.innerHTML = `
-            ${count > 0 ? "✔" : "✘"}
-            <div class="checkin-label">${date.slice(5)}</div>
-          `;
-          checkinGrid.appendChild(box);
-        });
+	// 打卡牆
+	const checkinGrid = document.getElementById("checkinGrid");
+	checkinGrid.innerHTML = "";
+	Object.entries(daily).forEach(([date, count]) => {
+	  const dObj = new Date(date);
+	  const isWeekend = dObj.getDay() === 0 || dObj.getDay() === 6; // 週日=0，週六=6
+
+	  let stateClass = "green";   // 預設：當天有提交
+	  let symbol     = "✔";
+
+	  // 未提交時再判斷週末 / 平日
+	  if (count === 0) {
+		if (isWeekend) {
+		  stateClass = "gray";    // 灰色
+		  symbol     = "💤";        // 不顯示紅叉
+		} else {
+		  stateClass = "red";
+		  symbol     = "✘";
+		}
+	  }
+
+	  const box = document.createElement("div");
+	  box.className = `checkin-day ${stateClass}`;
+	  box.innerHTML = `
+		${symbol}
+		<div class="checkin-label">${date.slice(5)}</div>
+	  `;
+	  checkinGrid.appendChild(box);
+	});
+
 
         // 熱力圖（30天）
         const heatmapGrid = document.getElementById("heatmapGrid");
